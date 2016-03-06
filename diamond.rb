@@ -2,44 +2,43 @@ require 'rspec'
 
 class Diamond 
 
-  def initialize(limit)
-    @limit = limit
-    @letter_range = ('A'..@limit).to_enum	
-    @number_of_letters = @letter_range.count
+  FILLER_CHARACTER = '-'
+
+  def initialize(last_letter)
+    @letter_range = ('A'..last_letter).to_enum
   end
 
-  def rendered()
-    return 'A' if @limit == 'A'
+  def rendered
+    return 'A' if @letter_range.count == 1
             
-    diamond_rows = top_rows_of_diamond + mirror_of(top_rows_of_diamond)
-    diamond_rows.join("\n") 
+    (top_rows_of_diamond + mirror_of(top_rows_of_diamond)).join("\n")
   end
   
   private 
   
   def top_rows_of_diamond
-    @letter_range.with_index.collect{|letter, rank| row_to_display(letter, rank)}
+    @letter_range.collect.with_index{|letter, rank| row_to_display(letter, rank)}
   end
 
   def row_to_display(letter, rank)
-   return centered("A") if(rank == 0)
+   return centered('A') if(rank == 0)
    centered(letter + middle_padding_at(rank) + letter)
   end
 
   def centered(line)
-   line.center(diamond_width, "-")
-  end
-
-  def middle_padding_at(rank)
-    "-" * middle_padding_width_at(rank)
-  end 
-
-  def middle_padding_width_at(rank)
-    rank * 2 -1
+   line.center(diamond_width, FILLER_CHARACTER)
   end
 
   def diamond_width
-    @number_of_letters * 2 - 1
+    @letter_range.count * 2 - 1
+  end
+
+  def middle_padding_at(rank)
+    FILLER_CHARACTER * middle_padding_width_at(rank)
+  end 
+
+  def middle_padding_width_at(rank)
+    rank * 2 - 1
   end
 
   def mirror_of(rows)
